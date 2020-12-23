@@ -1,0 +1,2 @@
+import tweepy
+from credentials import CONSUMER_KEY, CONSUMER_KEY_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET

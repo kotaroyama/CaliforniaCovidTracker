@@ -9,4 +9,5 @@ I wanted to try out [pandas](https://pandas.pydata.org/) and [matplotlib](https:
   - Tweets out the number daily using Tweepy.
 
 ## Tasks
+  - Implement Tweeting API
   - Make the plots look better

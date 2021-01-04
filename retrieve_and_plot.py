@@ -33,7 +33,7 @@ def retrieve_and_plot():
 
         # lists for plotting
         list_daily_new_cases.append(daily_new_cases)
-        list_dates.append(f"{start_date.month}/{start_date.day}")
+        list_dates.append(mpldates.date2num(start_date))
 
         start_date += delta
 
@@ -44,10 +44,16 @@ def retrieve_and_plot():
     plt.ylabel('Cases')
     plt.grid(axis='y')
 
+    axis = plt.gca()
+    axis.set_xticks(axis.get_xticks()[::2])
+    axis.xaxis.set_major_locator(mpldates.MonthLocator())
+    axis.xaxis.set_major_locator(mpldates.DayLocator(bymonthday=(start_date.day - 15, start_date.day)))
+    axis.xaxis.set_major_formatter(mpldates.DateFormatter('%b %d'))
+
     plt.plot(list_dates, list_daily_new_cases, 'r--')
 
     # Save the file
-    plt.savefig('graph.png')
+    plt.savefig(f'images/{date.today().strftime("%Y-%m-%d")}.png')
 
     # Maximize window size and show the plot
     mng = plt.get_current_fig_manager()

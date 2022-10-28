@@ -1,15 +1,15 @@
 from datetime import date, timedelta
 
-import matplotlib.dates as mpldates
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import matplotlib.dates as mpldates
+import matplotlib.pyplot as plt
 
 def retrieve_and_plot():
-    url = 'https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/926fd08f-cc91-4828-af38-bd45de97f8c3/download/statewide_cases.csv'
+    url = 'https://data.chhs.ca.gov/dataset/f333528b-4d38-4814-bebb-12db1f10f535/resource/046cdd2b-31e5-4d34-9ed3-b48cdbc4be7a/download/covid19cases_test.csv'
     df = pd.read_csv(url)
 
-    # print daily new cases from march 18 to today
+    # Print daily new cases from one month ago to today
     start_date = date.today() - timedelta(days=30)
     end_date = date.today()
     delta = timedelta(days=1)
@@ -22,10 +22,10 @@ def retrieve_and_plot():
 
     while start_date <= end_date:
         # filter out new cases of the day
-        date_filtered = df['date'] == np.datetime64(start_date)
+        date_filtered = (df['date'] == np.datetime64(start_date))
 
         # add to the grand total and the list
-        daily_new_cases =  df[date_filtered]['newcountconfirmed'].sum()
+        daily_new_cases =  df[date_filtered]['cases'].sum()
         total_cases += daily_new_cases
 
         if daily_new_cases == 0:
@@ -35,6 +35,7 @@ def retrieve_and_plot():
         list_daily_new_cases.append(daily_new_cases)
         list_dates.append(mpldates.date2num(start_date))
 
+        # add one day
         start_date += delta
 
     # Plot date (daily new cases in the last 30 days)
@@ -45,19 +46,19 @@ def retrieve_and_plot():
     plt.grid(axis='y')
 
     axis = plt.gca()
-    axis.set_xticks(axis.get_xticks()[::2])
+    axis.set_xticks(axis.get_xticks()[::4])
     axis.xaxis.set_major_locator(mpldates.MonthLocator())
-    axis.xaxis.set_major_locator(mpldates.DayLocator(bymonthday=(start_date.day - 15, start_date.day)))
     axis.xaxis.set_major_formatter(mpldates.DateFormatter('%b %d'))
+    axis.xaxis.set_major_locator(mpldates.DayLocator(interval=5))
+    plt.gcf().autofmt_xdate()
 
-    plt.plot(list_dates, list_daily_new_cases, 'r--')
+    plt.bar(list_dates, list_daily_new_cases, align='center')
+# plt.plot(list_dates, list_daily_new_cases, 'r--')
 
     # Save the file
     plt.savefig(f'images/{date.today().strftime("%Y-%m-%d")}.png')
 
     # Maximize window size and show the plot
-    mng = plt.get_current_fig_manager()
-    mng.full_screen_toggle()
     plt.show()
     
 if __name__ == '__main__':

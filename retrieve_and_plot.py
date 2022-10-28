@@ -53,7 +53,6 @@ def retrieve_and_plot():
     plt.gcf().autofmt_xdate()
 
     plt.bar(list_dates, list_daily_new_cases, align='center')
-# plt.plot(list_dates, list_daily_new_cases, 'r--')
 
     # Save the file
     plt.savefig(f'images/{date.today().strftime("%Y-%m-%d")}.png')
